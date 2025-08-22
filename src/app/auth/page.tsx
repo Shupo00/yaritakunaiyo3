@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+// Avoid static prerendering for auth (depends on client-side session)
+export const dynamic = 'force-dynamic'
+
 export default function AuthPage() {
   const [mode, setMode] = useState<'signin'|'signup'|'magic'>('signin')
   const [email, setEmail] = useState('')
