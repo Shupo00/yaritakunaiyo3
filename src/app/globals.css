@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #121212;
+  --card: #1E1E1E;
+  --fg: #E0E0E0;
+}
+
+html, body {
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(138,43,226,0.08), transparent),
+              radial-gradient(900px 500px at 100% 0%, rgba(255,0,0,0.05), transparent),
+              var(--bg);
+  color: var(--fg);
+}
+
+a { color: theme('colors.poison.500'); }
+
+::selection {
+  background: rgba(138,43,226,0.35);
+  color: white;
+}
+
+.card {
+  /* Tailwind arbitrary color with opacity on CSS vars is limited; use a near-equivalent */
+  @apply rounded-lg border border-neutral-800/60 bg-neutral-900/80 shadow-card backdrop-blur-md transition-shadow duration-300 ease-out;
+}
+.card:hover {
+  @apply shadow-cardHover;
+}
+
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -2px; height: 2px; width: 100%;
+  background: linear-gradient(90deg, #8A2BE2, #FF0000);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+.nav-underline:hover::after { transform: scaleX(1); }
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-gradient-to-b from-poison-500 to-poison-700 px-3 py-2 font-semibold text-white shadow-glow transition-transform duration-200 ease-out hover:brightness-110 active:scale-95;
+}
+
+.input, .textarea, .select {
+  @apply w-full rounded-md border border-neutral-700 bg-neutral-900/80 p-2 text-sm text-neutral-100 outline-none transition-shadow duration-150 ease-out focus:shadow-[0_0_0_2px_rgba(138,43,226,0.35)];
+}
+
+/* Dislike slider vendor styling via CSS variables (size and colors are configurable per instance) */
+.dslider-input::-webkit-slider-runnable-track { height: var(--h, 14px); background: transparent; }
+.dslider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--thumb, 18px); height: var(--thumb, 18px); border-radius: 9999px;
+  background: var(--thumb-color, #8A2BE2); border: 2px solid #111;
+  box-shadow: var(--glow-shadow, 0 0 0 3px rgba(138,43,226,0.25), 0 6px 18px rgba(0,0,0,0.4));
+  transition: background-color var(--transition-bg, 600ms) ease, box-shadow .3s ease, transform .15s ease;
+  margin-top: calc((var(--thumb, 18px) - var(--h, 14px)) / -2);
+}
+.dslider-input:active::-webkit-slider-thumb { transform: scale(0.95); }
+.dslider-input::-moz-range-track { height: var(--h, 14px); background: transparent; }
+.dslider-input::-moz-range-thumb {
+  width: var(--thumb, 18px); height: var(--thumb, 18px); border-radius: 9999px;
+  background: var(--thumb-color, #8A2BE2); border: 2px solid #111;
+  box-shadow: var(--glow-shadow, 0 0 0 3px rgba(138,43,226,0.25), 0 6px 18px rgba(0,0,0,0.4));
+  transition: background-color var(--transition-bg, 600ms) ease, box-shadow .3s ease, transform .15s ease;
+}
