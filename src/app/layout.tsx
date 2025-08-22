@@ -1,6 +1,10 @@
 import './globals.css'
 import NavBar from '@/components/ui/NavBar'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
+
 export const metadata = {
   title: 'やりたくないよ！',
   description: '行動とやりたくない理由を可視化する',
@@ -20,3 +24,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
+

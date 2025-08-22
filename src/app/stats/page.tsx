@@ -1,6 +1,18 @@
 "use client"
 import { useEffect, useMemo, useState } from 'react'
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, AreaChart, Area, CartesianGrid } from 'recharts'
+import dynamic from 'next/dynamic'
+// Recharts components (client-only) loaded with ssr:false to avoid prerender/import issues
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+const BarChart = dynamic(() => import('recharts').then(m => m.BarChart), { ssr: false })
+const Bar = dynamic(() => import('recharts').then(m => m.Bar), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const LineChart = dynamic(() => import('recharts').then(m => m.LineChart), { ssr: false })
+const Line = dynamic(() => import('recharts').then(m => m.Line), { ssr: false })
+const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
+const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
 import { supabase } from '@/lib/supabaseClient'
 import type { Task } from '@/lib/types'
 import AuthGuard from '@/components/AuthGuard'

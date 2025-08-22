@@ -1,10 +1,15 @@
 "use client"
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
+
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-// Avoid static prerendering for auth (depends on client-side session)
-export const dynamic = 'force-dynamic'
+async function getSupabase() {
+  const mod = await import('@/lib/supabaseClient')
+  return mod.supabase
+}
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'signin'|'signup'|'magic'>('signin')
@@ -18,8 +23,10 @@ export default function AuthPage() {
   const next = sp.get('next') || '/'
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace(next)
+    getSupabase().then((supabase) => {
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session) router.replace(next)
+      })
     })
   }, [next, router])
 
@@ -28,6 +35,7 @@ export default function AuthPage() {
     setLoading(true)
     setMessage(null)
     try {
+      const supabase = await getSupabase()
       if (mode === 'signin') {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
@@ -85,3 +93,4 @@ export default function AuthPage() {
     </section>
   )
 }
+
