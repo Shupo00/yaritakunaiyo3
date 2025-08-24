@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import type { Task } from '@/lib/types'
 import AuthGuard from '@/components/AuthGuard'
 import CalendarHeatmap from '@/components/CalendarHeatmap'
+import CalendarHeatmapMobile from '@/components/CalendarHeatmapMobile'
 
 type Range = 'week'|'month'
 type HeatMetric = 'avg'|'count'
@@ -91,7 +92,10 @@ export default function StatsPage() {
       c.sum += t.dislike_level; c.cnt += 1
     })
     const maxCount = cell.flat().reduce((m, c) => Math.max(m, c.cnt), 0)
-    return { cell, maxCount }
+
+    const transposed = Array.from({ length: 24 }, (_, h) => Array.from({ length: 7 }, (_, w) => cell[w][h]))
+
+    return { cell, maxCount, transposed }
   }, [tasks])
 
   const weekdays = ['日','月','火','水','木','金','土']
@@ -183,8 +187,11 @@ export default function StatsPage() {
               <option value="avg">平均やりたくない度</option>
             </select>
           </div>
-          <div className="overflow-x-auto">
+          <div className="hidden sm:block">
             <CalendarHeatmap tasks={tasks} metric={metric} weeks={20} startOn="mon" />
+          </div>
+          <div className="sm:hidden">
+            <CalendarHeatmapMobile tasks={tasks} metric={metric} weeks={20} startOn="mon" />
           </div>
         </div>
 
@@ -200,7 +207,7 @@ export default function StatsPage() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <div className="grid grid-cols-[auto,repeat(24,1fr)] gap-1 min-w-[700px]">
+            <div className="hidden sm:grid grid-cols-[auto,repeat(24,1fr)] gap-1 min-w-[700px]">
             <div />
             {Array.from({ length: 24 }, (_, h) => (
               <div key={h} className="text-center text-[10px] text-neutral-400">{h}</div>
@@ -218,6 +225,25 @@ export default function StatsPage() {
               </>
             ))}
           </div>
+          </div>
+
+          <div className="sm:hidden grid grid-cols-[auto,repeat(7,1fr)] gap-1">
+            <div />
+            {weekdays.map((w, i) => (
+              <div key={i} className="text-center text-[10px] text-neutral-400">{w}</div>
+            ))}
+            {heat.transposed.map((row, h) => (
+              <>
+                <div key={`h-${h}`} className="pr-1 text-right text-[12px] text-neutral-400">{h}</div>
+                {row.map((c, w) => {
+                  const val = metric === 'avg' ? (c.cnt ? Math.round(c.sum / c.cnt) : 0) : c.cnt
+                  const bg = metric === 'avg' ? colorScaleAvg(val) : colorScaleCount(val, heat.maxCount)
+                  return (
+                    <div key={`c-${h}-${w}`} className="h-5 rounded" title={`${weekdays[w]} ${h}時: ${metric==='avg' ? `平均 ${val}` : `件数 ${val}`}`} style={{ backgroundColor: bg }} />
+                  )
+                })}
+              </>
+            ))}
           </div>
           <div className="flex items-center gap-4 text-xs text-neutral-400">
             <span>凡例:</span>

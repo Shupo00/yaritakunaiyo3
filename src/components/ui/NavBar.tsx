@@ -33,6 +33,17 @@ export default function NavBar() {
   const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const menu = menuRef.current
+    if (open && menu) {
+      requestAnimationFrame(() => {
+        menu.style.opacity = '1'
+      })
+    } else if (menu) {
+      menu.style.opacity = '0'
+    }
+  }, [open])
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setOpen(false)
@@ -85,8 +96,8 @@ export default function NavBar() {
 
       {open && (
         <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/60" />
-          <div ref={menuRef} className="absolute right-3 top-3 w-56 rounded-lg border border-neutral-800 bg-[var(--card)]/90 p-2 shadow-card backdrop-blur-md">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
+          <div ref={menuRef} className="absolute right-3 top-3 w-56 rounded-lg border border-neutral-800 bg-[var(--card)] p-2 shadow-2xl backdrop-blur-md transition-opacity duration-300">
             <div className="px-2 py-1 text-xs text-neutral-400">メニュー</div>
             <div className="flex flex-col gap-1 p-1">
               <Link href="/add" onClick={()=>setOpen(false)} className="rounded-md px-3 py-2 text-neutral-200 hover:bg-neutral-800/80 inline-flex items-center gap-2">
