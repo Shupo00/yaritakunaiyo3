@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import UserMenu from '@/components/UserMenu'
 
@@ -30,6 +30,19 @@ export default function NavBar() {
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState<string | null>(null)
   const router = useRouter()
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [menuRef])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null))
@@ -71,9 +84,9 @@ export default function NavBar() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50" onClick={()=>setOpen(false)}>
+        <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute right-3 top-3 w-56 rounded-lg border border-neutral-800 bg-[var(--card)]/90 p-2 shadow-card backdrop-blur-md" onClick={(e)=>e.stopPropagation()}>
+          <div ref={menuRef} className="absolute right-3 top-3 w-56 rounded-lg border border-neutral-800 bg-[var(--card)]/90 p-2 shadow-card backdrop-blur-md">
             <div className="px-2 py-1 text-xs text-neutral-400">メニュー</div>
             <div className="flex flex-col gap-1 p-1">
               <Link href="/add" onClick={()=>setOpen(false)} className="rounded-md px-3 py-2 text-neutral-200 hover:bg-neutral-800/80 inline-flex items-center gap-2">

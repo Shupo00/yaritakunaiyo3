@@ -1,18 +1,6 @@
 "use client"
 import { useEffect, useMemo, useState } from 'react'
-import dynamic from 'next/dynamic'
-// Recharts components (client-only) loaded with ssr:false to avoid prerender/import issues
-const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
-const BarChart = dynamic(() => import('recharts').then(m => m.BarChart), { ssr: false })
-const Bar = dynamic(() => import('recharts').then(m => m.Bar), { ssr: false })
-const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
-const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
-const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
-const LineChart = dynamic(() => import('recharts').then(m => m.LineChart), { ssr: false })
-const Line = dynamic(() => import('recharts').then(m => m.Line), { ssr: false })
-const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
-const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
-const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+import { AreaChart, Area, LineChart, Line, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { supabase } from '@/lib/supabaseClient'
 import type { Task } from '@/lib/types'
 import AuthGuard from '@/components/AuthGuard'
@@ -139,43 +127,51 @@ export default function StatsPage() {
         <div className="card p-4">
           <div className="mb-2 text-sm text-neutral-400">日次平均（ライン）</div>
           <div className="h-56 sm:h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={series}>
-                <defs>
-                  <linearGradient id="avgGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8A2BE2" stopOpacity={0.35} />
-                    <stop offset="100%" stopColor="#8A2BE2" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
-                <XAxis dataKey="date" stroke="#aaa" tick={{ fontSize: 10 }} interval="preserveStartEnd" minTickGap={20} />
-                <YAxis stroke="#aaa" domain={[0, 100]} tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ background: '#1E1E1E', border: '1px solid #333' }} labelStyle={{ color: '#ccc' }} formatter={(v)=>[v,'平均']} />
-                <Area type="monotone" dataKey="avg" stroke="#8A2BE2" strokeWidth={2.5} fill="url(#avgGrad)" isAnimationActive animationDuration={600} />
-                <Line type="monotone" dataKey="avg" stroke="#B68CF2" dot={{ r: 0 }} activeDot={{ r: 4, stroke: '#fff', strokeWidth: 1 }} strokeWidth={1.5} />
-              </AreaChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div className="text-neutral-400">読み込み中…</div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={series}>
+                  <defs>
+                    <linearGradient id="avgGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8A2BE2" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="#8A2BE2" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
+                  <XAxis dataKey="date" stroke="#aaa" tick={{ fontSize: 10 }} interval="preserveStartEnd" minTickGap={20} />
+                  <YAxis stroke="#aaa" domain={[0, 100]} tick={{ fontSize: 11 }} />
+                  <Tooltip contentStyle={{ background: '#1E1E1E', border: '1px solid #333' }} labelStyle={{ color: '#ccc' }} formatter={(v)=>[v,'平均']} />
+                  <Area type="monotone" dataKey="avg" stroke="#8A2BE2" strokeWidth={2.5} fill="url(#avgGrad)" isAnimationActive animationDuration={600} />
+                  <Line type="monotone" dataKey="avg" stroke="#B68CF2" dot={{ r: 0 }} activeDot={{ r: 4, stroke: '#fff', strokeWidth: 1 }} strokeWidth={1.5} />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
         <div className="card p-4">
           <div className="mb-2 text-sm text-neutral-400">日次件数（バー）</div>
           <div className="h-56 sm:h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={series}>
-                <defs>
-                  <linearGradient id="countGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8A2BE2" stopOpacity={0.9} />
-                    <stop offset="100%" stopColor="#8A2BE2" stopOpacity={0.2} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
-                <XAxis dataKey="date" stroke="#aaa" tick={{ fontSize: 10 }} interval="preserveStartEnd" minTickGap={20} />
-                <YAxis stroke="#aaa" allowDecimals={false} tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ background: '#1E1E1E', border: '1px solid #333' }} labelStyle={{ color: '#ccc' }} formatter={(v)=>[v,'件数']} />
-                <Bar dataKey="count" fill="url(#countGrad)" radius={[4,4,0,0]} isAnimationActive animationDuration={600} />
-              </BarChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div className="text-neutral-400">読み込み中…</div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={series}>
+                  <defs>
+                    <linearGradient id="countGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8A2BE2" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="#8A2BE2" stopOpacity={0.2} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
+                  <XAxis dataKey="date" stroke="#aaa" tick={{ fontSize: 10 }} interval="preserveStartEnd" minTickGap={20} />
+                  <YAxis stroke="#aaa" allowDecimals={false} tick={{ fontSize: 11 }} />
+                  <Tooltip contentStyle={{ background: '#1E1E1E', border: '1px solid #333' }} labelStyle={{ color: '#ccc' }} formatter={(v)=>[v,'件数']} />
+                  <Bar dataKey="count" fill="url(#countGrad)" radius={[4,4,0,0]} isAnimationActive animationDuration={600} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
@@ -187,7 +183,9 @@ export default function StatsPage() {
               <option value="avg">平均やりたくない度</option>
             </select>
           </div>
-          <CalendarHeatmap tasks={tasks} metric={metric} weeks={20} startOn="mon" />
+          <div className="overflow-x-auto">
+            <CalendarHeatmap tasks={tasks} metric={metric} weeks={20} startOn="mon" />
+          </div>
         </div>
 
         <div className="space-y-3 card p-4">
@@ -201,7 +199,8 @@ export default function StatsPage() {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-[auto,repeat(24,1fr)] gap-1">
+          <div className="overflow-x-auto">
+            <div className="grid grid-cols-[auto,repeat(24,1fr)] gap-1 min-w-[700px]">
             <div />
             {Array.from({ length: 24 }, (_, h) => (
               <div key={h} className="text-center text-[10px] text-neutral-400">{h}</div>
@@ -218,6 +217,7 @@ export default function StatsPage() {
                 })}
               </>
             ))}
+          </div>
           </div>
           <div className="flex items-center gap-4 text-xs text-neutral-400">
             <span>凡例:</span>
