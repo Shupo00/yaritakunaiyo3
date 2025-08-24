@@ -26,15 +26,18 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  if (checking) {
-    return <div className="text-neutral-400">認証確認中…</div>
-  }
-  if (!authed) {
-    // redirect to /auth with return path
-    if (!checking) {
+  useEffect(() => {
+    if (!checking && !authed) {
       const next = encodeURIComponent(pathname || '/')
       router.replace(`/auth?next=${next}`)
     }
+  }, [checking, authed, pathname, router])
+
+  if (checking) {
+    return <div className="text-neutral-400">認証確認中…</div>
+  }
+
+  if (!authed) {
     return (
       <div className="rounded border border-neutral-800 bg-[var(--card)] p-4 text-sm text-neutral-300">
         このページを利用するにはログインが必要です。<Link href="/auth" className="ml-2 text-poison-500">ログインへ</Link>
