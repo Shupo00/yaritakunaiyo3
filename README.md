@@ -26,10 +26,6 @@
 - **グラフ**: Recharts  
 - **デプロイ**: Vercel  
 
----
-
-## 🗂 アーキテクチャ
-
 
 ---
 
@@ -49,18 +45,20 @@
 ---
 
 ## 📂 ディレクトリ構成
+
 src/
   app/
     add/          # タスク追加ページ
     auth/         # 認証ページ (ログイン/サインアウト)
     stats/        # 統計画面
-    task/         # タスク詳細  (動的ルート)
+    task/         # タスク詳細 (動的ルート)
     globals.css   # Tailwind 共通スタイル
     layout.tsx    # 共通レイアウト
     page.tsx      # 一覧（トップページ）
   components/     # 再利用可能なUI部品
   lib/            # Supabaseクライアント, APIラッパ
 supabase/         # migrationファイル (テーブル, インデックス, RLS設定)
+
 
 Next.js (App Router) の構成に従って、`src/app/` 以下のディレクトリがそのままルーティングになります。
 
