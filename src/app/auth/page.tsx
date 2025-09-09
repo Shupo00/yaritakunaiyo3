@@ -17,7 +17,8 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const sp = useSearchParams()
-  const next = sp.get('next') || '/'
+  const nextParam = sp.get('next')
+  const next = nextParam ? nextParam : '/'
 
   useEffect(() => {
     getSupabase().then((supabase) => {
