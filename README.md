@@ -46,6 +46,7 @@
 
 ## 📂 ディレクトリ構成
 
+```plaintext
 src/
   app/
     add/          # タスク追加ページ
@@ -61,7 +62,7 @@ supabase/         # migrationファイル (テーブル, インデックス, RLS
 
 
 Next.js (App Router) の構成に従って、`src/app/` 以下のディレクトリがそのままルーティングになります。
-
+```
 
 ---
 
